@@ -1,3 +1,4 @@
+from dotenv import load_dotenv
 import bcrypt
 import mysql.connector
 from mysql.connector import Error
@@ -5,15 +6,22 @@ from tkinter import font, messagebox
 import random
 import string
 import tkinter as tk
+import os
+
+# Carregar variáveis de ambiente do arquivo .env
+try:
+    load_dotenv()
+except Exception as e:
+    print(f"Erro ao carregar o .env: {e}")
 
 # Função para conectar ao banco de dados
 def criar_conexao():
     try:
         conexao = mysql.connector.connect(
-            host='localhost',
-            user='root',
-            password='E2004!zo',  
-            database='GerenciadorSenhas'
+            host=os.getenv("DB_HOST", "localhost"),
+            user=os.getenv("DB_USER", "root"),
+            password=os.getenv("DB_PASSWORD"),
+            database=os.getenv("DB_NAME", "GerenciadorSenhas")
         )
         if conexao.is_connected():
             print("Conexão bem-sucedida com o banco de dados!")
@@ -30,19 +38,19 @@ def fechar_conexao(conexao):
 
 # Função para criptografar a senha
 def criptografar_senha(senha):
-    # Gerar um salt e criptografar a senha
+    
     salt = bcrypt.gensalt()
     senha_hash = bcrypt.hashpw(senha.encode('utf-8'), salt)
     return senha_hash
 
-# Função para verificar se a senha fornecida corresponde ao hash armazenado
+
 def verificar_senha(senha, senha_hash):
     senha_bytes = senha.encode('utf-8') 
     senha_hash_bytes = senha_hash.encode('utf-8')  
     return bcrypt.checkpw(senha_bytes, senha_hash_bytes)
 
 
-# Função para autenticar usuário no login
+
 def autenticar_usuario(nome_usuario, senha):
     conexao = criar_conexao()
     if conexao:
@@ -71,7 +79,7 @@ def salvar_usuario(nome_usuario, senha):
     if conexao:
         cursor = conexao.cursor()
 
-        # Certifique-se de que a senha esteja em bytes antes de gerar o hash
+        
         senha_bytes = senha.encode('utf-8')
         senha_hash = bcrypt.hashpw(senha_bytes, bcrypt.gensalt()).decode('utf-8')
 
@@ -101,7 +109,7 @@ def salvar_senha_site(nome_usuario, nome_site, nome_usuario_site, senha):
         try:
             cursor = conexao.cursor()
             
-            # Obter o ID do usuário com base no nome de usuário
+            
             cursor.execute("SELECT id FROM usuarios WHERE nome_usuario = %s", (nome_usuario,))
             resultado = cursor.fetchone()
             if not resultado:
@@ -110,7 +118,7 @@ def salvar_senha_site(nome_usuario, nome_site, nome_usuario_site, senha):
 
             id_usuario = resultado[0]
 
-            # Inserir a senha no banco de dados
+            
             query = """
             INSERT INTO senhas (id_usuario, nome_site, nome_usuario_site, senha)
             VALUES (%s, %s, %s, %s)
@@ -139,10 +147,10 @@ def visualizar_senhas_usuario(nome_usuario):
         
         if usuario:
             id_usuario = usuario[0]
-            # Selecionar ID, nome_site, nome_usuario_site, senha
+            
             query = "SELECT id, nome_site, nome_usuario_site, senha FROM senhas WHERE id_usuario = %s"
             cursor.execute(query, (id_usuario,))
-            senhas = cursor.fetchall()  # Lista de tuplas com 4 valores
+            senhas = cursor.fetchall() 
         else:
             senhas = []
 
@@ -165,7 +173,7 @@ def editar_senha(senha_id, novo_site, novo_usuario, nova_senha):
                 WHERE id = %s
             """, (novo_site, novo_usuario, nova_senha, senha_id))
 
-            # Confirmar a transação
+            
             conn.commit()
 
             if cursor.rowcount > 0:
@@ -175,7 +183,7 @@ def editar_senha(senha_id, novo_site, novo_usuario, nova_senha):
                 print("Nenhuma linha foi atualizada. Verifique o ID.")
                 resultado = False
 
-            # Fechar o cursor e conexão
+            
             cursor.close()
             conn.close()
 
@@ -236,10 +244,10 @@ def excluir_senha(senha_id):
         try:
             cursor = conn.cursor()
 
-            # Excluir a senha do banco de dados
+            
             cursor.execute("DELETE FROM senhas WHERE id = %s", (senha_id,))
 
-            # Confirmar a transação
+            
             conn.commit()
 
             if cursor.rowcount > 0:
@@ -249,7 +257,7 @@ def excluir_senha(senha_id):
                 print("Nenhuma linha foi excluída. Verifique o ID.")
                 resultado = False
 
-            # Fechar o cursor e conexão
+            
             cursor.close()
             conn.close()
 

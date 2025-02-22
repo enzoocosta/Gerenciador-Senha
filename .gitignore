@@ -1,0 +1,20 @@
+# Arquivos sensíveis
+.env
+config.json
+database.sqlite
+secrets.yml
+
+# Arquivos de log e backup
+*.log
+*.bak
+
+# Arquivos de banco de dados
+*.db
+
+# Diretórios de cache e dependências
+__pycache__/
+node_modules/
+
+# Arquivos específicos do sistema operacional
+.DS_Store         # Para macOS
+Thumbs.db         # Para Windows

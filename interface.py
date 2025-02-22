@@ -36,13 +36,13 @@ def janela_principal(nome_usuario):
     fonte_botao = tkfont.Font(family="Helvetica", size=12, weight="bold")
     fonte_texto = tkfont.Font(family="Helvetica", size=12)
 
-    # Frame principal com bordas arredondadas
+    
     frame_principal = tk.Frame(janela, padx=30, pady=30, bg="#f0f0f0")
     frame_principal.pack(fill="both", expand=True)
 
     tk.Label(frame_principal, text=f"Bem-vindo, {nome_usuario}!", font=fonte_titulo, fg="#333", bg="#f0f0f0").pack(pady=20)
 
-    # Botões com animação de hover
+    
     def on_enter(btn, color):
         btn.config(bg=color)
 
@@ -123,7 +123,7 @@ def adicionar_senha_janela(nome_usuario):
 
     tk.Button(janela, text="Salvar", command=salvar, font=("Arial", 12), bg="#4CAF50", fg="#fff").pack(pady=20)
 
-# Função para visualizar senhas com efeito de degradê e animações
+
 # Função para visualizar senhas com efeito de degradê e animações
 def visualizar_senhas_janela(nome_usuario):
     senhas = visualizar_senhas_usuario(nome_usuario)
