@@ -18,3 +18,4 @@ node_modules/
 # Arquivos específicos do sistema operacional
 .DS_Store         # Para macOS
 Thumbs.db         # Para Windows
+".env" 
